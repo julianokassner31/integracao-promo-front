@@ -17,6 +17,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DataViewModule } from 'primeng/dataview';
+import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
@@ -62,6 +63,7 @@ registerLocaleData(localePt);
     MessageModule,
     TabViewModule,
     SplitButtonModule,
+    InputTextModule,
   ],
   providers: [
     MessageService,

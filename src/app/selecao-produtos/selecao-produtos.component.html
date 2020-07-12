@@ -1,3 +1,23 @@
+<div class="p-gutter p-grid p-align-baseline">
+  <span class="p-col-2 ui-float-label">
+    <input
+      id="float-input"
+      required
+      type="text"
+      size="30"
+      [(ngModel)]="config.tempoScan"
+      pInputText
+    />
+    <label for="float-input">Sincronização em minutos</label>
+  </span>
+  <p-button
+    class="p-col-1"
+    type="button"
+    label="Salvar"
+    (click)="salvarConfigTempoScan()"
+  ></p-button>
+</div>
+
 <p-tabView (onChange)="buscarProdutosPromocao($event)">
   <p-tabPanel header="Seleção de Produtos">
     <p-card class="content">

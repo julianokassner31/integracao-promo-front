@@ -10,7 +10,9 @@ import { ApiService } from './services/api.service';
 export class AppComponent implements AfterContentInit {
   title = 'integrador-promocao-diaria';
   version: any;
+
   constructor(private api: ApiService) {}
+
   ngAfterContentInit(): void {
     this.api.getVersion().subscribe((resp: any) => {
       this.version = resp.versao;

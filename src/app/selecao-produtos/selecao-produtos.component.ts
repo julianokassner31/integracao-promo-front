@@ -16,6 +16,7 @@ export class SelecaoProdutosComponent implements OnInit {
   produtosPromocaoFilter: Produto[] = [];
   pageLinks = 0;
   pt = Calendar.PT_BR;
+  config: any;
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   acoes = [
     {
@@ -32,7 +33,34 @@ export class SelecaoProdutosComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.api.get('/config').subscribe((resp) => {
+      this.config = resp;
+    });
+  }
+
+  salvarConfigTempoScan() {
+    this.api.post('/config', this.config).subscribe(
+      (resp) => {
+        this.config = resp;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensagem',
+          detail: 'Configuração salva com sucesso!',
+          life: 3000,
+        });
+      },
+      (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensagem',
+          detail: `Houve um erro ao salvar a configuração!`,
+          life: 3000,
+        });
+      },
+      () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    );
+  }
 
   syncProduto() {}
 
