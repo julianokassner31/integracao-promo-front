@@ -20,7 +20,9 @@ import { DataViewModule } from 'primeng/dataview';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TreeTableModule } from 'primeng/treetable';
 import { AppRoutingModule } from './app-routing.module';
@@ -58,6 +60,8 @@ registerLocaleData(localePt);
     ToggleButtonModule,
     MessagesModule,
     MessageModule,
+    TabViewModule,
+    SplitButtonModule,
   ],
   providers: [
     MessageService,

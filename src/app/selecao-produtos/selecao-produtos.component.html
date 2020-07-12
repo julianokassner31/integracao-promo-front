@@ -1,71 +1,162 @@
-<p-card class="content">
-  <div class="p-col-8 input">
-    <p-autoComplete
-      [suggestions]="produtos"
-      (completeMethod)="buscarProdutos($event)"
-      [size]="60"
-      delay="400"
-      minLength="3"
-      field="descricao"
-      placeholder="Busque os produtos para enviar"
-    >
-    </p-autoComplete>
-  </div>
-  <div class="p-col-12">
-    <p-dataView [value]="produtos">
-      <p-header class="p-grid p-justify-end">
-        <div class="p-col-2">Cod. Barras</div>
-        <div class="p-col-2">NCM</div>
-        <div class="p-col-2">Descrição</div>
-        <div class="p-col-1">Qtd Atual</div>
-        <div class="p-col-2">Preço de Venda</div>
-        <div class="p-col-2">Vigência Promoção</div>
-        <div class="p-col-1">Ativar?</div>
-      </p-header>
+<p-tabView (onChange)="buscarProdutosPromocao($event)">
+  <p-tabPanel header="Seleção de Produtos">
+    <p-card class="content">
+      <div class="p-col-8 input">
+        <p-autoComplete
+          [suggestions]="produtos"
+          (completeMethod)="buscarProdutos($event)"
+          [size]="60"
+          delay="400"
+          minLength="3"
+          field="descricao"
+          placeholder="Busque produtos para enviar"
+        >
+        </p-autoComplete>
+      </div>
+      <div class="p-col-12">
+        <p-dataView [paginator]="true" [rows]="10" [value]="produtos">
+          <p-header class="p-grid">
+            <div class="p-col-1 text-center">Cod. Barras</div>
+            <div class="p-col-1 text-center">NCM</div>
+            <div class="p-col-3 text-center">Descrição</div>
+            <div class="p-col-1 text-center">Qtd Atual</div>
+            <div class="p-col-2 text-center">Preço</div>
+            <div class="p-col-3 text-center">Vigência Promoção</div>
+            <div class="p-col-1 text-center">Ativar?</div>
+          </p-header>
 
-      <ng-template let-produto pTemplate="listItem">
-        <p-card class="p-col-12 p-nogutter">
-          <div class="p-grid p-justify-around p-align-baseline">
-            <div class="p-col-2">
-              {{ produto.codBarra }}
-            </div>
-            <div class="p-col-2">
-              {{ produto.codNcm }}
-            </div>
-            <div class="p-col-2">
-              {{ produto.descricao }}
-            </div>
-            <div class="p-col-1">
-              {{ produto.qtdAtual }}
-            </div>
-            <div class="p-col-2">
-              {{ produto.prcVenda | currencyCustom }}
-            </div>
-            <div class="p-col-2">
-              <p-calendar
-                dateFormat="dd/mm/yy"
-                [locale]="pt"
-                showButtonBar="true"
-                selectionMode="range"
-                [(ngModel)]="produto.datas"
-              ></p-calendar>
-            </div>
-            <div class="p-grid p-justify-start p-col-1">
-              <p-toggleButton
-                onLabel="Sim"
-                offLabel="Não"
-                [(ngModel)]="produto.ativo"
-              ></p-toggleButton>
-            </div>
-          </div>
-        </p-card>
-      </ng-template>
-    </p-dataView>
-  </div>
-  <button
-    pButton
-    [disabled]="produtos.length === 0"
-    label="Enviar"
-    (click)="enviarProdutos()"
-  ></button>
-</p-card>
+          <ng-template let-produto pTemplate="listItem">
+            <p-card class="p-col-12 p-nogutter">
+              <div class="p-grid p-justify-around p-align-baseline">
+                <div class="p-col-1 text-center">
+                  {{ produto.codBarra }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.codNcm }}
+                </div>
+                <div class="p-col-3 text-center">
+                  {{ produto.descricao }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.qtAtual }}
+                </div>
+                <div class="p-col-2 text-center">
+                  {{ produto.prcVenda | currencyCustom }}
+                </div>
+                <div class="p-col-3 text-center">
+                  <p-calendar
+                    dateFormat="dd/mm/yy"
+                    [locale]="pt"
+                    showButtonBar="true"
+                    selectionMode="range"
+                    [(ngModel)]="produto.datas"
+                  ></p-calendar>
+                </div>
+                <div class="p-col-1 text-center">
+                  <p-toggleButton
+                    onLabel="Sim"
+                    offLabel="Não"
+                    [(ngModel)]="produto.selecionado"
+                  ></p-toggleButton>
+                </div>
+              </div>
+            </p-card>
+          </ng-template>
+        </p-dataView>
+      </div>
+      <button
+        pButton
+        [disabled]="produtos.length === 0"
+        label="Enviar"
+        (click)="enviarProdutos()"
+      ></button>
+    </p-card>
+  </p-tabPanel>
+
+  <p-tabPanel header="Produtos Enviados">
+    <p-card class="content p-nogutter">
+      <div class="p-col-8 input">
+        <p-autoComplete
+          #inputAutoComplete
+          [suggestions]="produtosPromocaoFilter"
+          (completeMethod)="filtroProdutosPromocao($event)"
+          [size]="60"
+          delay="200"
+          minLength="1"
+          field="descricao"
+          placeholder="Busque um produto"
+          (onBlur)="restoreProdutosPromocao()"
+        >
+        </p-autoComplete>
+      </div>
+      <div class="p-col-12">
+        <p-dataView
+          [pageLinks]="pageLinks"
+          [paginator]="true"
+          [rows]="10"
+          [value]="produtosPromocaoFilter"
+        >
+          <p-header class="p-grid p-justify-center">
+            <div class="p-col-1 text-center">Cod. Barras</div>
+            <div class="p-col-1 text-center">NCM</div>
+            <div class="p-col-2 text-center">Descrição</div>
+            <div class="p-col-1 text-center">Qtd Atual</div>
+            <div class="p-col-1 text-center">Preço</div>
+            <div class="p-col-2 text-center">Vigência Promoção</div>
+            <div class="p-col-1 text-center">Ativo</div>
+            <div class="p-col-1 text-center">Sincronizado</div>
+            <div class="p-col-2 text-center">Ações</div>
+          </p-header>
+
+          <ng-template let-produto pTemplate="listItem">
+            <p-card class="p-col-12 p-nogutter">
+              <div class="p-grid p-justify-around p-align-baseline">
+                <div class="p-col-1 text-center">
+                  {{ produto.codBarra }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.codNcm }}
+                </div>
+                <div class="p-col-2 text-center">
+                  {{ produto.descricao }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.qtAtual }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.prcVenda | currencyCustom }}
+                </div>
+                <div class="p-col-2 text-center">
+                  de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
+                  hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.sync ? "Sim" : "Não" }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.ativo ? "Sim" : "Não" }}
+                </div>
+                <div class="p-col-2 text-center">
+                  <p-splitButton
+                    *ngIf="produto.ativo"
+                    label="Desativar"
+                    (onClick)="desativarProduto()"
+                    icon="pi pi-times"
+                    [model]="acoes"
+                  ></p-splitButton>
+
+                  <p-splitButton
+                    *ngIf="!produto.ativo"
+                    label="Ativar"
+                    (onClick)="ativarProduto()"
+                    icon="pi pi-check"
+                  ></p-splitButton>
+                </div>
+              </div>
+            </p-card>
+          </ng-template>
+        </p-dataView>
+      </div>
+    </p-card>
+  </p-tabPanel>
+</p-tabView>
