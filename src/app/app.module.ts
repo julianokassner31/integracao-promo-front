@@ -32,6 +32,7 @@ import { ForceSyncComponent } from './force-sync/force-sync.component';
 import { LoginComponent } from './login/login.component';
 import { CurrencyCustomPipe } from './pipes/currency-custom.pipe';
 import { SelecaoProdutosComponent } from './selecao-produtos/selecao-produtos.component';
+import {DropdownModule} from 'primeng/dropdown';
 registerLocaleData(localePt);
 
 @NgModule({
@@ -64,6 +65,7 @@ registerLocaleData(localePt);
     TabViewModule,
     SplitButtonModule,
     InputTextModule,
+    DropdownModule
   ],
   providers: [
     MessageService,

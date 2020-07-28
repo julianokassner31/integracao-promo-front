@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "jkassner": "ng build --watch --outputPath=/home/jkassner/Documentos/projetos/backend/promodiaria/Integrador/src/main/resources/static/app --baseHref=/app/"
+    "jkassner": "ng build --watch --outputPath=/home/jkassner/Documentos/projetos/backend/promodiaria/Integrador/src/main/resources/static/app --baseHref=/app/",
+    "jkassnermac": "ng build --watch --outputPath=/Users/julianokassnwe/Dev/pessoal/integracao-promo-back/src/main/resources/static/app --baseHref=/app/"
   },
   "private": true,
   "dependencies": {

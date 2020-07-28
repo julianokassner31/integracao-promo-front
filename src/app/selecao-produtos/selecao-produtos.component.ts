@@ -28,6 +28,8 @@ export class SelecaoProdutosComponent implements OnInit {
     },
   ];
 
+  setores: {value: string, label: string}[] = [];
+
   constructor(
     private api: ApiService,
     private messageService: MessageService
@@ -37,6 +39,12 @@ export class SelecaoProdutosComponent implements OnInit {
     this.api.get('/config').subscribe((resp) => {
       this.config = resp;
     });
+
+    this.api.get('/setores').subscribe(resp => {
+      this.setores = resp.map(r => {
+        return {value: r, label: r}
+      });
+    })
   }
 
   salvarConfigTempoScan() {
@@ -78,13 +86,6 @@ export class SelecaoProdutosComponent implements OnInit {
         detail: `Selecione ao menos um produto para ser enviado.`,
       });
     }
-
-    produtos.forEach((p) => {
-      if (p.datas) {
-        p.dtInicio = p.datas[0];
-        p.dtFim = p.datas[1];
-      }
-    });
 
     this.api.post('/produtos', produtos).subscribe(
       (success) => {
@@ -134,6 +135,16 @@ export class SelecaoProdutosComponent implements OnInit {
   restoreProdutosPromocao() {
     if (this.inputAutoComplete.inputEL.nativeElement.value.trim() === '') {
       this.produtosPromocaoFilter = [...this.produtosPromocao];
+    }
+  }
+
+  showLogs(show, id) {
+    if(show) {
+      document.getElementById(`log-${id}`).classList.add('log-show');
+      document.getElementById(`log-${id}`).classList.remove('log-hide');
+    }else {
+      document.getElementById(`log-${id}`).classList.add('log-hide');
+      document.getElementById(`log-${id}`).classList.remove('log-show');
     }
   }
 }

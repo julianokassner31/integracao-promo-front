@@ -15,3 +15,19 @@ button {
   max-width: 200px;
   margin-top: 15px;
 }
+
+i.log {
+  cursor: pointer;
+}
+
+.log-show {
+    display: block;
+    position: absolute;
+    background-color: rgb(247, 206, 206);
+    width: 150px;
+    z-index: 1000;
+  }
+
+.log-hide {
+  display: none;
+}

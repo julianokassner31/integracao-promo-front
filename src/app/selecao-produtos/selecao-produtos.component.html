@@ -28,7 +28,7 @@
           [size]="60"
           delay="400"
           minLength="3"
-          field="descricao"
+          field="nome"
           placeholder="Busque produtos para enviar"
         >
         </p-autoComplete>
@@ -36,41 +36,26 @@
       <div class="p-col-12">
         <p-dataView [paginator]="true" [rows]="10" [value]="produtos">
           <p-header class="p-grid">
-            <div class="p-col-1 text-center">Cod. Barras</div>
-            <div class="p-col-1 text-center">NCM</div>
-            <div class="p-col-3 text-center">Descrição</div>
-            <div class="p-col-1 text-center">Qtd Atual</div>
+            <div class="p-col-3 text-center">Nome</div>
+            <div class="p-col-3 text-center">Quantidade Atual</div>
+            <div class="p-col-3 text-center">Setor</div>
             <div class="p-col-2 text-center">Preço</div>
-            <div class="p-col-3 text-center">Vigência Promoção</div>
             <div class="p-col-1 text-center">Ativar?</div>
           </p-header>
 
           <ng-template let-produto pTemplate="listItem">
             <p-card class="p-col-12 p-nogutter">
               <div class="p-grid p-justify-around p-align-baseline">
-                <div class="p-col-1 text-center">
-                  {{ produto.codBarra }}
-                </div>
-                <div class="p-col-1 text-center">
-                  {{ produto.codNcm }}
+                <div class="p-col-3 text-center">
+                  {{ produto.nome }}
                 </div>
                 <div class="p-col-3 text-center">
-                  {{ produto.descricao }}
-                </div>
-                <div class="p-col-1 text-center">
                   {{ produto.qtAtual }}
                 </div>
+                <p-dropdown class="p-col-3 text-center" [options]="setores" [(ngModel)]="produto.setor"></p-dropdown>
+
                 <div class="p-col-2 text-center">
-                  {{ produto.prcVenda | currencyCustom }}
-                </div>
-                <div class="p-col-3 text-center">
-                  <p-calendar
-                    dateFormat="dd/mm/yy"
-                    [locale]="pt"
-                    showButtonBar="true"
-                    selectionMode="range"
-                    [(ngModel)]="produto.datas"
-                  ></p-calendar>
+                  {{ produto.valor | currencyCustom }}
                 </div>
                 <div class="p-col-1 text-center">
                   <p-toggleButton
@@ -117,11 +102,9 @@
           [value]="produtosPromocaoFilter"
         >
           <p-header class="p-grid p-justify-center">
-            <div class="p-col-1 text-center">Cod. Barras</div>
-            <div class="p-col-1 text-center">NCM</div>
-            <div class="p-col-2 text-center">Descrição</div>
-            <div class="p-col-1 text-center">Qtd Atual</div>
-            <div class="p-col-1 text-center">Preço</div>
+            <div class="p-col-2 text-center">Nome</div>
+            <div class="p-col-2 text-center">Quantidade Atual</div>
+            <div class="p-col-2 text-center">Preço</div>
             <div class="p-col-2 text-center">Vigência Promoção</div>
             <div class="p-col-1 text-center">Ativo</div>
             <div class="p-col-1 text-center">Sincronizado</div>
@@ -131,31 +114,47 @@
           <ng-template let-produto pTemplate="listItem">
             <p-card class="p-col-12 p-nogutter">
               <div class="p-grid p-justify-around p-align-baseline">
-                <div class="p-col-1 text-center">
-                  {{ produto.codBarra }}
-                </div>
-                <div class="p-col-1 text-center">
-                  {{ produto.codNcm }}
+                <div class="p-col-2 text-center">
+                  {{ produto.nome }}
                 </div>
                 <div class="p-col-2 text-center">
-                  {{ produto.descricao }}
-                </div>
-                <div class="p-col-1 text-center">
                   {{ produto.qtAtual }}
                 </div>
-                <div class="p-col-1 text-center">
-                  {{ produto.prcVenda | currencyCustom }}
-                </div>
                 <div class="p-col-2 text-center">
+                  {{ produto.valor | currencyCustom }}
+                </div>
+                
+                <div *ngIf="produto.dtInicio && produto.dtFim; else semInfo" class="p-col-2 text-center">
                   de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
                   hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
                 </div>
-                <div class="p-col-1 text-center">
-                  {{ produto.sync ? "Sim" : "Não" }}
-                </div>
+                
+                <ng-template #semInfo>
+                  <div class="p-col-2 text-center">
+                    Indeterminado.
+                  </div>
+                </ng-template>
+
                 <div class="p-col-1 text-center">
                   {{ produto.ativo ? "Sim" : "Não" }}
                 </div>
+
+                <div class="p-col-1 text-center">
+                  <i *ngIf="produto.log" 
+                    class="log pi pi-exclamation-circle"
+                    (mouseover)="showLogs(true, produto.id)"
+                    (mouseleave)="showLogs(false, produto.id)"
+                    >
+                  </i>
+                  
+                  {{ produto.sync ? "Sim" : "Não" }}
+
+                  <div id="log-{{produto.id}}" class="logs log-hide">
+                    {{produto.log}}
+                  </div>
+
+                </div>
+                
                 <div class="p-col-2 text-center">
                   <p-splitButton
                     *ngIf="produto.ativo"
