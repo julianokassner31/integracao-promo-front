@@ -104,8 +104,16 @@ export class SelecaoProdutosComponent implements OnInit {
           life: 3000,
         });
       },
-      () => window.scrollTo({ top: 0, behavior: 'smooth' })
-    );
+      () => {
+        this.resetListaProdutosBuscados();;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+  }
+
+  resetListaProdutosBuscados() {
+    this.produtos= [];
+    this.produtosPromocao = [];
+    this.produtosPromocaoFilter = [];
   }
 
   buscarProdutos(e) {

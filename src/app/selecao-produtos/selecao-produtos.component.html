@@ -52,7 +52,8 @@
                 <div class="p-col-3 text-center">
                   {{ produto.qtAtual }}
                 </div>
-                <p-dropdown class="p-col-3 text-center" [options]="setores" [(ngModel)]="produto.setor"></p-dropdown>
+
+                <p-dropdown placeholder="Selecione um Setor" class="p-col-3 text-center" [options]="setores" [(ngModel)]="produto.setor"></p-dropdown>
 
                 <div class="p-col-2 text-center">
                   {{ produto.valor | currencyCustom }}
