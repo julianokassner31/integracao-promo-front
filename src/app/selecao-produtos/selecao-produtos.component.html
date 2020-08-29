@@ -18,12 +18,11 @@
   ></p-button>
 </div>
 
-<p-tabView (onChange)="buscarProdutosPromocao($event)">
+<p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event)">
   <p-tabPanel header="Seleção de Produtos">
     <p-card class="content">
       <div class="p-col-8 input">
         <p-autoComplete
-          [suggestions]="produtos"
           (completeMethod)="buscarProdutos($event)"
           [size]="60"
           delay="400"
@@ -97,9 +96,13 @@
       </div>
       <div class="p-col-12">
         <p-dataView
-          [pageLinks]="pageLinks"
+          [lazy]="true"
+          (onLazyLoad)="buscarProdutosPromocaoPaginator($event)"
+          paginatorPosition="both" 
+          [totalRecords]="totalRecords"
+          [pageLinks]="totalPages"
           [paginator]="true"
-          [rows]="10"
+          [rows]="rowsPerPage"
           [value]="produtosPromocaoFilter"
         >
           <p-header class="p-grid p-justify-center">

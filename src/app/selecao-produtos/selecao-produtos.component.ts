@@ -14,9 +14,11 @@ export class SelecaoProdutosComponent implements OnInit {
   produtos: Produto[] = [];
   produtosPromocao: Produto[] = [];
   produtosPromocaoFilter: Produto[] = [];
-  pageLinks = 0;
+  totalPages = 0;
+  totalRecords = 0;
+  rowsPerPage = 10;
   pt = Calendar.PT_BR;
-  config: any;
+  config: any = {};
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   acoes = [
     {
@@ -122,15 +124,41 @@ export class SelecaoProdutosComponent implements OnInit {
     });
   }
 
-  buscarProdutosPromocao(e, page = 0) {
+  buscarProdutosPromocaoOnChangeTab(event) {
     this.inputAutoComplete.inputEL.nativeElement.value = '';
-    if (e.index === 1) {
-      this.api.get(`/produtos/promocoes?page=${page}`).subscribe((resp) => {
-        this.pageLinks = resp.totalPages;
-        this.produtosPromocao = resp.content;
-        this.produtosPromocaoFilter = resp.content;
-      });
+    if (event.index === 1) {
+      this.buscarProdutosPromocao(0);
     }
+  }
+
+  buscarProdutosPromocaoPaginator(event) {
+    this.buscarProdutosPromocao(this.findPage(event.first));
+  }
+
+  buscarProdutosPromocao(page) {
+    this.api.get(`/produtos/promocoes?page=${page}&rows=${this.rowsPerPage}`).subscribe((resp) => {
+      this.totalPages = resp.totalPages;
+      this.totalRecords = resp.totalElements;
+      this.produtosPromocao = resp.content;
+      this.produtosPromocaoFilter = resp.content;
+    });
+  }
+
+  findPage(firstIndexPage) {
+    const indicePages = [];
+    
+    for (let index = 0; index < this.totalPages; index++) {
+      
+      if(index === 0) {
+        indicePages.push(0);
+      
+        continue;
+      }
+
+      indicePages.push(index * this.rowsPerPage);
+    }
+
+   return indicePages.indexOf(firstIndexPage);
   }
 
   filtroProdutosPromocao(e) {
