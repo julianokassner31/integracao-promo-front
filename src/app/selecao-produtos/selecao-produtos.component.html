@@ -95,7 +95,7 @@
         </p-autoComplete>
       </div>
       <div class="p-col-12">
-        <p-dataView
+        <p-dataView #produtosEnviadosTabPanel
           [lazy]="true"
           (onLazyLoad)="buscarProdutosPromocaoPaginator($event)"
           paginatorPosition="both" 
@@ -144,36 +144,24 @@
                 </div>
 
                 <div class="p-col-1 text-center">
-                  <i *ngIf="produto.log" 
+                  <i *ngIf="produto.log; else syncOk" 
                     class="log pi pi-exclamation-circle"
-                    (mouseover)="showLogs(true, produto.id)"
-                    (mouseleave)="showLogs(false, produto.id)"
-                    >
+                    pTooltip="{{produto.log}}">
                   </i>
-                  
-                  {{ produto.sync ? "Sim" : "Não" }}
-
-                  <div id="log-{{produto.id}}" class="logs log-hide">
-                    {{produto.log}}
-                  </div>
-
+                  <ng-template #syncOk>
+                    <i
+                      class="log pi pi-check"
+                      pTooltip="Produto sincronizado">
+                    </i>
+                  </ng-template>
                 </div>
                 
                 <div class="p-col-2 text-center">
-                  <p-splitButton
-                    *ngIf="produto.ativo"
-                    label="Desativar"
-                    (onClick)="desativarProduto()"
-                    icon="pi pi-times"
-                    [model]="acoes"
-                  ></p-splitButton>
-
-                  <p-splitButton
-                    *ngIf="!produto.ativo"
-                    label="Ativar"
-                    (onClick)="ativarProduto()"
-                    icon="pi pi-check"
-                  ></p-splitButton>
+                  <i 
+                    class="pi pi-sort-alt" 
+                    pTooltip="Sincronizar produto"
+                    (click)=syncProduto(produto.id)>
+                  </i>
                 </div>
               </div>
             </p-card>
