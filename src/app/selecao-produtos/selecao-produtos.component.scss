@@ -16,22 +16,10 @@ button {
   margin-top: 15px;
 }
 
-.log-show {
-    display: block;
-    position: absolute;
-    background-color: rgb(247, 206, 206);
-    width: 150px;
-    z-index: 1000;
-  }
-
-.log-hide {
-  display: none;
-}
-
 .pi-sort-alt {
   cursor: pointer;
 }
 
-.ui-autocomplete i {
-  display: none !important;
+p-inputnumber {
+  margin: -10px;
 }

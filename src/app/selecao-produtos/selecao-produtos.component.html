@@ -31,7 +31,7 @@
             <div class="p-col-1 text-center">Valor</div>
             <div class="p-col-2 text-center">Valor Promoção</div>
             <div class="p-col-2 text-center">Vigência Promoção</div>
-            <div class="p-col-1 text-center">Status</div>
+            <div class="p-col-1 text-center">Ativo</div>
             <div class="p-col-1 text-center">Sincronizado</div>
             <div class="p-col-1 text-center">Ações</div>
           </p-header>
@@ -182,24 +182,117 @@
     </p-card>
   </p-tabPanel>
   <p-tabPanel header="Configurações">
-    <p-card class="content">
-      <span class="p-col-2 ui-float-label">
-        <input
-          id="float-input"
-          required
-          type="text"
-          size="30"
-          [(ngModel)]="config.tempoScan"
-          pInputText
-        />
-        <label for="float-input">Sincronização em minutos</label>
-      </span>
-      <p-button
-        class="p-col-1"
-        type="button"
-        label="Salvar"
-        (click)="salvarConfigTempoScan()"
-      ></p-button>
+    <p-card class="p-col-12">
+      <div [formGroup]="formConfig">
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4"> Sincronização em minutos</label>
+          <p-inputNumber min="1"
+            class="p-col-4 p-sm-6"
+            required
+            formControlName="tempoScan">
+          </p-inputNumber>
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Token</label>
+            <input
+              class="p-col-4 p-sm-6"
+              type="text"
+              size="30"
+              pInputText
+              required
+              formControlName="token"
+            />
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Url integração</label>
+            <input
+              class="p-col-4 p-sm-6"
+              type="text"
+              size="30"
+              pInputText
+              required
+              formControlName="urlIntegracao"
+            />
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Sistema Cliente</label>
+            <input
+              class="p-col-4 p-sm-6"
+              type="text"
+              size="30"
+              pInputText
+              required
+              formControlName="sistema"
+            />
+        </div>
+        <button
+          pButton
+          type="button"
+          [disabled]="!formConfig.valid"
+          class="p-col-2"
+          label="Salvar"
+          (click)="salvarConfig()">
+        </button>
+      </div>
+    </p-card>
+  </p-tabPanel>
+  <p-tabPanel header="Usuário">
+    <p-card class="p-col-12">
+      {{formUsuario.value | json}}
+      <div [formGroup]="formUsuario">
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Usuário</label>
+            <input
+              class="p-col-4 p-sm-6"
+              required
+              type="text"
+              size="30"
+              pInputText
+              formControlname="username"
+            />
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Senha Atual</label>
+            <input
+              class="p-col-4 p-sm-6"
+              required
+              type="password"
+              size="30"
+              pInputText
+              formControlname="password"
+            />
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Nova senha</label>
+            <input
+              class="p-col-4 p-sm-6"
+              required
+              type="password"
+              size="30"
+              pInputText
+              formControlname="newpassword"
+            />
+        </div>
+        <div class="p-grid p-col-6">
+          <label class="p-col-2 p-sm-4">Repita a nova senha</label>
+            <input
+              class="p-col-4 p-sm-6"
+              required
+              type="password"
+              size="30"
+              pInputText
+              formControlname="repeat"
+            />
+        </div>
+        <button
+            pButton
+            type="button"
+            [disabled]="!formConfig.valid"
+            class="p-col-2"
+            label="Salvar"
+            (click)="salvarConfigUsuario()">
+          </button>
+        </div>
     </p-card>
   </p-tabPanel>
 </p-tabView>

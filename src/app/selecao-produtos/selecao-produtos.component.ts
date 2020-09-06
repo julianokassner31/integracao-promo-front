@@ -7,6 +7,7 @@ import { Calendar } from '../utils/Calendar';
 import { TabPanel } from 'primeng/tabview';
 import { Paginator } from 'primeng/paginator';
 import { DataView } from 'primeng/dataview';
+import { FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-selecao-produtos',
@@ -21,20 +22,30 @@ export class SelecaoProdutosComponent implements OnInit {
   totalRecords = 0;
   rowsPerPage = 10;
   pt = Calendar.PT_BR;
-  config: any = {};
+
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   @ViewChild("produtosEnviadosTabPanel") produtosEnviadosTabPanel: DataView;
 
   setores: {value: string, label: string}[] = [];
 
+  formConfig: FormGroup = this.fb.group({
+    tempoScan: [''],
+    token: [''],
+    urlIntegracao: [''],
+    sistema: ['']
+  });
+
+  formUsuario: FormGroup = new FormGroup({});
+
   constructor(
     private api: ApiService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.api.get('/config').subscribe((resp) => {
-      this.config = resp;
+      this.buildForms(resp);
     });
 
     this.api.get('/setores').subscribe(resp => {
@@ -46,10 +57,34 @@ export class SelecaoProdutosComponent implements OnInit {
     this.buscarProdutosPromocao();
   }
 
-  salvarConfigTempoScan() {
-    this.api.post('/config', this.config).subscribe(
+  salvarConfigUsuario() {
+    this.messageService.clear();
+    this.api.post('/config/save-usuario', this.formUsuario.value).subscribe(
       (resp) => {
-        this.config = resp;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensagem',
+          detail: 'Usuário alterado com sucesso!',
+          life: 3000,
+        });
+      },
+      (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensagem',
+          detail: `Houve um erro ao atualizar o usuário!`,
+          life: 3000,
+        });
+      },
+      () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    );
+  }
+
+  salvarConfig() {
+    this.messageService.clear();
+    this.api.post('/config', this.formConfig.value).subscribe(
+      (resp) => {
+        this.buildForms(resp);
         this.messageService.add({
           severity: 'success',
           summary: 'Mensagem',
@@ -70,6 +105,7 @@ export class SelecaoProdutosComponent implements OnInit {
   }
 
   syncProduto(idProduto) {
+    this.messageService.clear();
     this.api.post(`/produtos/sincronizar/${idProduto}`).subscribe(
       (success) => {
         this.messageService.add({
@@ -93,9 +129,11 @@ export class SelecaoProdutosComponent implements OnInit {
   }
 
   enviarProdutos() {
+
+    this.messageService.clear();
     let produtos = this.produtos.filter((p) => p.selecionado);
 
-    const produtosSemSetor = this.produtos.filter((p) => !p.setor);
+    const produtosSemSetor = produtos.filter((p) => !p.setor);
 
     if (produtosSemSetor.length) {
       this.messageService.add({
@@ -218,5 +256,23 @@ export class SelecaoProdutosComponent implements OnInit {
 
   scrollTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  buildForms(resp) {
+    this.formConfig = this.fb.group({
+      id: [resp.id],
+      tempoScan: [resp.tempoScan, [Validators.required, Validators.pattern(new RegExp(/\d/))]],
+      token: [resp.token, [Validators.required]],
+      urlIntegracao: [resp.urlIntegracao, [Validators.required]],
+      sistema: [resp.sistema, [Validators.required]]
+    });
+debugger
+    this.formUsuario = this.fb.group({
+      idConfig: [resp.id],
+      username: [resp.username, Validators.required],
+      password: ['', Validators.required],
+      newpassword: ['', Validators.required],
+      repeat: ['', Validators.required]
+    })
   }
 }

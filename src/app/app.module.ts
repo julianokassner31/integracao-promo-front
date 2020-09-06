@@ -34,7 +34,11 @@ import { CurrencyCustomPipe } from './pipes/currency-custom.pipe';
 import { SelecaoProdutosComponent } from './selecao-produtos/selecao-produtos.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {TooltipModule} from 'primeng/tooltip';
+import {ReactiveFormsModule} from '@angular/forms';
+import {InputNumberModule} from 'primeng/inputnumber';
+
 registerLocaleData(localePt);
+import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -67,7 +71,9 @@ registerLocaleData(localePt);
     SplitButtonModule,
     InputTextModule,
     DropdownModule,
-   TooltipModule
+   TooltipModule,
+   ReactiveFormsModule,
+   InputNumberModule
   ],
   providers: [
     MessageService,
