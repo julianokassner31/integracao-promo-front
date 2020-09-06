@@ -41,7 +41,9 @@ export class SelecaoProdutosComponent implements OnInit {
       this.setores = resp.map(r => {
         return {value: r, label: r}
       });
-    })
+    });
+
+    this.buscarProdutosPromocao();
   }
 
   salvarConfigTempoScan() {
@@ -86,12 +88,27 @@ export class SelecaoProdutosComponent implements OnInit {
         });
       },
       () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.scrollTop();
       });
   }
 
   enviarProdutos() {
     let produtos = this.produtos.filter((p) => p.selecionado);
+
+    const produtosSemSetor = this.produtos.filter((p) => !p.setor);
+
+    if (produtosSemSetor.length) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensagem',
+        detail: 'Existe produto sem setor selecionado.',
+        life: 3000,
+      });
+      
+      this.scrollTop();
+      
+      return;
+    }
 
     if (!produtos.length) {
       return this.messageService.add({
@@ -99,6 +116,8 @@ export class SelecaoProdutosComponent implements OnInit {
         summary: 'Mensagem',
         detail: `Selecione ao menos um produto para ser enviado.`,
       });
+
+      this.scrollTop();
     }
 
     this.api.post('/produtos', produtos).subscribe(
@@ -121,7 +140,7 @@ export class SelecaoProdutosComponent implements OnInit {
       () => {
         this.resetListaProdutosBuscados();
         this.produtosEnviadosTabPanel.first = 0;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.scrollTop();
       });
   }
 
@@ -152,47 +171,20 @@ export class SelecaoProdutosComponent implements OnInit {
 
   buscarProdutosPromocaoOnChangeTab(event) {
     this.inputAutoComplete.inputEL.nativeElement.value = '';
-    if (event.index === 1) {
-      this.buscarProdutosPromocao(0);
+    if (event.index === 0) {
+      this.buscarProdutosPromocao();
     }
   }
 
-  buscarProdutosPromocaoPaginator(event) {
-    this.buscarProdutosPromocao(this.findPage(event.first));
-  }
-
-  buscarProdutosPromocao(page) {
-
-    if (page >= 0) {
-      this.api.get(`/produtos/promocoes?page=${page}&rows=${this.rowsPerPage}`).subscribe((resp) => {
-        this.totalPages = resp.totalPages;
-        this.totalRecords = resp.totalElements;
-        this.produtosPromocao = resp.content;
-        this.produtosPromocaoFilter = resp.content;
+  buscarProdutosPromocao() {
+      this.api.get('/produtos/promocoes').subscribe((resp) => {
+        this.totalPages = Math.ceil(resp.length / this.rowsPerPage);
+        this.totalRecords = resp.length;
+        this.produtosPromocao = resp;
+        this.produtosPromocaoFilter = resp;
       });
-    }
   }
 
-  findPage(firstIndexPage) {
-    const indicePages = [];
-    
-    for (let index = 0; index < this.totalPages; index++) {
-      
-      if(index === 0) {
-        indicePages.push(0);
-      
-        continue;
-      }
-
-      indicePages.push(index * this.rowsPerPage);
-    }
-
-   return indicePages.indexOf(firstIndexPage);
-  }
-
-  // COmo esta trazendo paginado, o filtro funciona para a pagina corrente
-  // caso precise pesquisar em tudo, deve tirar a paginacao e carregar todos os produtos
-  // de uma so vez.
   filtroProdutosPromocao(e) {
     const query = (<String>e.query).toUpperCase();
 
@@ -209,5 +201,9 @@ export class SelecaoProdutosComponent implements OnInit {
     if (this.inputAutoComplete.inputEL.nativeElement.value.trim() === '') {
       this.produtosPromocaoFilter = [...this.produtosPromocao];
     }
+  }
+
+  scrollTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

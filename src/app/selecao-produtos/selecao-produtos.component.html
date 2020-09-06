@@ -19,6 +19,103 @@
 </div>
 
 <p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event)">
+  <p-tabPanel header="Produtos Enviados">
+    <p-card class="content p-nogutter">
+      <div class="p-col-8 input">
+        <p-autoComplete
+          #inputAutoComplete
+          [suggestions]="produtosPromocaoFilter"
+          (completeMethod)="filtroProdutosPromocao($event)"
+          [size]="60"
+          delay="200"
+          minLength="1"
+          field="descricao"
+          placeholder="Busque um produto"
+          (onBlur)="restoreProdutosPromocao()"
+        >
+        </p-autoComplete>
+      </div>
+      <div class="p-col-12">
+        <p-dataView #produtosEnviadosTabPanel
+          paginatorPosition="both" 
+          [totalRecords]="totalRecords"
+          [pageLinks]="totalPages"
+          [paginator]="true"
+          [rows]="rowsPerPage"
+          [value]="produtosPromocaoFilter"
+        >
+          <p-header class="p-grid p-justify-center">
+            <div class="p-col-1 text-center">Codigo</div>
+            <div class="p-col-2 text-center">Nome</div>
+            <div class="p-col-1 text-center">Qtd Atual</div>
+            <div class="p-col-1 text-center">Valor</div>
+            <div class="p-col-2 text-center">Valor Promoção</div>
+            <div class="p-col-2 text-center">Vigência Promoção</div>
+            <div class="p-col-1 text-center">Ativo</div>
+            <div class="p-col-1 text-center">Sincronizado</div>
+            <div class="p-col-1 text-center">Ações</div>
+          </p-header>
+
+          <ng-template let-produto pTemplate="listItem">
+            <p-card class="p-col-12 p-nogutter">
+              <div class="p-grid p-justify-around p-align-baseline">
+                <div class="p-col-1 text-center">
+                  {{ produto.idIdentificador }}
+                </div>
+                <div class="p-col-2 text-center">
+                  {{ produto.nome }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.qtAtual }}
+                </div>
+                <div class="p-col-1 text-center">
+                  {{ produto.valor | currencyCustom }}
+                </div>
+                <div class="p-col-2 text-center">
+                  {{ produto.vlPromocao | currencyCustom }}
+                </div>
+                <div *ngIf="produto.dtInicio && produto.dtFim; else semInfo" class="p-col-2 text-center">
+                  de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
+                  hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
+                </div>
+                
+                <ng-template #semInfo>
+                  <div class="p-col-2 text-center">
+                    Indeterminado.
+                  </div>
+                </ng-template>
+
+                <div class="p-col-1 text-center">
+                  {{ produto.ativo ? "Sim" : "Não" }}
+                </div>
+
+                <div class="p-col-1 text-center">
+                  <i *ngIf="produto.log; else syncOk" 
+                    class="pi pi-exclamation-circle"
+                    pTooltip="{{produto.log}}">
+                  </i>
+                  <ng-template #syncOk>
+                    <i
+                      class="pi pi-check"
+                      pTooltip="Produto sincronizado">
+                    </i>
+                  </ng-template>
+                </div>
+                
+                <div class="p-col-1 text-center">
+                  <i 
+                    class="pi pi-sort-alt" 
+                    pTooltip="Sincronizar produto"
+                    (click)=syncProduto(produto.id)>
+                  </i>
+                </div>
+              </div>
+            </p-card>
+          </ng-template>
+        </p-dataView>
+      </div>
+    </p-card>
+  </p-tabPanel>
   <p-tabPanel header="Seleção de Produtos">
     <p-card class="content">
       <div class="p-col-8 input">
@@ -52,7 +149,12 @@
                   {{ produto.qtAtual }}
                 </div>
 
-                <p-dropdown placeholder="Selecione um Setor" class="p-col-3 text-center" [options]="setores" [(ngModel)]="produto.setor"></p-dropdown>
+                <p-dropdown 
+                  placeholder="Selecione um Setor" 
+                  class="p-col-3 text-center" 
+                  [options]="setores" 
+                  [(ngModel)]="produto.setor">
+                </p-dropdown>
 
                 <div class="p-col-2 text-center">
                   {{ produto.valor | currencyCustom }}
@@ -75,99 +177,6 @@
         label="Enviar"
         (click)="enviarProdutos()"
       ></button>
-    </p-card>
-  </p-tabPanel>
-
-  <p-tabPanel header="Produtos Enviados">
-    <p-card class="content p-nogutter">
-      <div class="p-col-8 input">
-        <p-autoComplete
-          #inputAutoComplete
-          [suggestions]="produtosPromocaoFilter"
-          (completeMethod)="filtroProdutosPromocao($event)"
-          [size]="60"
-          delay="200"
-          minLength="1"
-          field="descricao"
-          placeholder="Busque um produto"
-          (onBlur)="restoreProdutosPromocao()"
-        >
-        </p-autoComplete>
-      </div>
-      <div class="p-col-12">
-        <p-dataView #produtosEnviadosTabPanel
-          [lazy]="true"
-          (onLazyLoad)="buscarProdutosPromocaoPaginator($event)"
-          paginatorPosition="both" 
-          [totalRecords]="totalRecords"
-          [pageLinks]="totalPages"
-          [paginator]="true"
-          [rows]="rowsPerPage"
-          [value]="produtosPromocaoFilter"
-        >
-          <p-header class="p-grid p-justify-center">
-            <div class="p-col-2 text-center">Nome</div>
-            <div class="p-col-2 text-center">Quantidade Atual</div>
-            <div class="p-col-2 text-center">Preço</div>
-            <div class="p-col-2 text-center">Vigência Promoção</div>
-            <div class="p-col-1 text-center">Ativo</div>
-            <div class="p-col-1 text-center">Sincronizado</div>
-            <div class="p-col-2 text-center">Ações</div>
-          </p-header>
-
-          <ng-template let-produto pTemplate="listItem">
-            <p-card class="p-col-12 p-nogutter">
-              <div class="p-grid p-justify-around p-align-baseline">
-                <div class="p-col-2 text-center">
-                  {{ produto.nome }}
-                </div>
-                <div class="p-col-2 text-center">
-                  {{ produto.qtAtual }}
-                </div>
-                <div class="p-col-2 text-center">
-                  {{ produto.valor | currencyCustom }}
-                </div>
-                
-                <div *ngIf="produto.dtInicio && produto.dtFim; else semInfo" class="p-col-2 text-center">
-                  de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
-                  hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
-                </div>
-                
-                <ng-template #semInfo>
-                  <div class="p-col-2 text-center">
-                    Indeterminado.
-                  </div>
-                </ng-template>
-
-                <div class="p-col-1 text-center">
-                  {{ produto.ativo ? "Sim" : "Não" }}
-                </div>
-
-                <div class="p-col-1 text-center">
-                  <i *ngIf="produto.log; else syncOk" 
-                    class="log pi pi-exclamation-circle"
-                    pTooltip="{{produto.log}}">
-                  </i>
-                  <ng-template #syncOk>
-                    <i
-                      class="log pi pi-check"
-                      pTooltip="Produto sincronizado">
-                    </i>
-                  </ng-template>
-                </div>
-                
-                <div class="p-col-2 text-center">
-                  <i 
-                    class="pi pi-sort-alt" 
-                    pTooltip="Sincronizar produto"
-                    (click)=syncProduto(produto.id)>
-                  </i>
-                </div>
-              </div>
-            </p-card>
-          </ng-template>
-        </p-dataView>
-      </div>
     </p-card>
   </p-tabPanel>
 </p-tabView>
