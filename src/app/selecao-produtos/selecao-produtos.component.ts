@@ -152,7 +152,7 @@ export class SelecaoProdutosComponent implements OnInit {
 
   buscarProdutos(e) {
     
-    let loader = <HTMLElement> document.querySelector('.ui-autocomplete i');
+    let loader = <HTMLElement> document.querySelector('.produtosBuscar i');
     
     if (loader) loader.style.display = 'block';
     
@@ -161,7 +161,7 @@ export class SelecaoProdutosComponent implements OnInit {
       this.produtos = resp;
       
       if (!loader) {
-        loader = <HTMLElement> document.querySelector('.ui-autocomplete i');
+        loader = <HTMLElement> document.querySelector('.produtosBuscar i');
       } 
       
       loader.style.display = 'none';
@@ -188,10 +188,23 @@ export class SelecaoProdutosComponent implements OnInit {
   filtroProdutosPromocao(e) {
     const query = (<String>e.query).toUpperCase();
 
+    let loader = <HTMLElement> document.querySelector('.produtosPareados i');
+ 
+    if (loader) loader.style.display = 'block';
+
     if (query) {
       this.produtosPromocaoFilter = this.produtosPromocao.filter(
         (produto) => produto.nome.toUpperCase().indexOf(query) > -1
       );
+      
+      setTimeout(() => {
+        if (!loader) {
+          loader = <HTMLElement> document.querySelector('.produtosPareados i');
+         
+        }
+        loader.style.display = 'none';
+      }, 500);
+
     } else {
       this.produtosPromocaoFilter = this.produtosPromocao;
     }

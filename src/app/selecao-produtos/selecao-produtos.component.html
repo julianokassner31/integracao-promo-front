@@ -19,17 +19,17 @@
 </div>
 
 <p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event)">
-  <p-tabPanel header="Produtos Enviados">
+  <p-tabPanel header="Produtos Pareados">
     <p-card class="content p-nogutter">
       <div class="p-col-8 input">
         <p-autoComplete
+          class="produtosPareados"
           #inputAutoComplete
-          [suggestions]="produtosPromocaoFilter"
           (completeMethod)="filtroProdutosPromocao($event)"
           [size]="60"
           delay="200"
-          minLength="1"
-          field="descricao"
+          minLength="3"
+          field="nome"
           placeholder="Busque um produto"
           (onBlur)="restoreProdutosPromocao()"
         >
@@ -51,7 +51,7 @@
             <div class="p-col-1 text-center">Valor</div>
             <div class="p-col-2 text-center">Valor Promoção</div>
             <div class="p-col-2 text-center">Vigência Promoção</div>
-            <div class="p-col-1 text-center">Ativo</div>
+            <div class="p-col-1 text-center">Status</div>
             <div class="p-col-1 text-center">Sincronizado</div>
             <div class="p-col-1 text-center">Ações</div>
           </p-header>
@@ -116,10 +116,11 @@
       </div>
     </p-card>
   </p-tabPanel>
-  <p-tabPanel header="Seleção de Produtos">
+  <p-tabPanel header="Meu Sistema">
     <p-card class="content">
       <div class="p-col-8 input">
         <p-autoComplete
+          class="produtosBuscar"
           (completeMethod)="buscarProdutos($event)"
           [size]="60"
           delay="400"
@@ -131,34 +132,55 @@
       </div>
       <div class="p-col-12">
         <p-dataView [paginator]="true" [rows]="10" [value]="produtos">
-          <p-header class="p-grid">
-            <div class="p-col-3 text-center">Nome</div>
-            <div class="p-col-3 text-center">Quantidade Atual</div>
-            <div class="p-col-3 text-center">Setor</div>
-            <div class="p-col-2 text-center">Preço</div>
+          <p-header class="p-grid p-justify-center">
+            <div class="p-col-1 text-center">Codigo</div>
+            <div class="p-col-2 text-center">Nome</div>
+            <div class="p-col-1 text-center">Qtd Atual</div>
+            <div class="p-col-1 text-center">Valor</div>
+            <div class="p-col-2 text-center">Valor Promoção</div>
+            <div class="p-col-2 text-center">Vigência Promoção</div>
+            <div class="p-col-1 text-center">Ativo</div>
+            <div class="p-col-1 text-center">Setor</div>
             <div class="p-col-1 text-center">Ativar?</div>
           </p-header>
 
           <ng-template let-produto pTemplate="listItem">
             <p-card class="p-col-12 p-nogutter">
               <div class="p-grid p-justify-around p-align-baseline">
-                <div class="p-col-3 text-center">
+                <div class="p-col-1 text-center">
+                  {{ produto.idIdentificador }}
+                </div>
+                <div class="p-col-2 text-center">
                   {{ produto.nome }}
                 </div>
-                <div class="p-col-3 text-center">
+                <div class="p-col-1 text-center">
                   {{ produto.qtAtual }}
                 </div>
-
+                <div class="p-col-1 text-center">
+                  {{ produto.valor | currencyCustom }}
+                </div>
+                <div class="p-col-2 text-center">
+                  {{ produto.vlPromocao | currencyCustom }}
+                </div>
+                <div *ngIf="produto.dtInicio && produto.dtFim; else semInfo" class="p-col-2 text-center">
+                  de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
+                  hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
+                </div>
+                
+                <ng-template #semInfo>
+                  <div class="p-col-2 text-center">
+                    Indeterminado.
+                  </div>
+                </ng-template>
+                <div class="p-col-1 text-center">
+                  {{ produto.ativo ? "Sim" : "Não" }}
+                </div>
                 <p-dropdown 
                   placeholder="Selecione um Setor" 
-                  class="p-col-3 text-center" 
+                  class="p-col-1 text-center" 
                   [options]="setores" 
                   [(ngModel)]="produto.setor">
                 </p-dropdown>
-
-                <div class="p-col-2 text-center">
-                  {{ produto.valor | currencyCustom }}
-                </div>
                 <div class="p-col-1 text-center">
                   <p-toggleButton
                     onLabel="Sim"
