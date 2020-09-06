@@ -22,6 +22,7 @@ export class SelecaoProdutosComponent implements OnInit {
   totalRecords = 0;
   rowsPerPage = 10;
   pt = Calendar.PT_BR;
+  sistemaOptionsDropDow = [];
 
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   @ViewChild("produtosEnviadosTabPanel") produtosEnviadosTabPanel: DataView;
@@ -50,6 +51,12 @@ export class SelecaoProdutosComponent implements OnInit {
 
     this.api.get('/setores').subscribe(resp => {
       this.setores = resp.map(r => {
+        return {value: r, label: r}
+      });
+    });
+
+    this.api.get('/config/sistemas').subscribe(resp => {
+      this.sistemaOptionsDropDow = resp.map(r => {
         return {value: r, label: r}
       });
     });

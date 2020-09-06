@@ -216,14 +216,14 @@
         </div>
         <div class="p-grid p-col-6">
           <label class="p-col-2 p-sm-4">Sistema Cliente</label>
-            <input
+            <p-dropdown
+              [options]="sistemaOptionsDropDow"
+              placeholder="Selecione um sistema"
               class="p-col-4 p-sm-6"
-              type="text"
-              size="30"
-              pInputText
-              required
+              required="true"
               formControlName="sistema"
-            />
+            >
+          </p-dropdown>
         </div>
         <button
           pButton
