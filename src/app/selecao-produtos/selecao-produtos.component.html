@@ -282,7 +282,11 @@
               pInputText
               formControlName="repeat"
             />
+            <div *ngIf="f.repeat.errors" class="p-col-12 ng-invalid">
+              <div style="text-align: center; color: red;" *ngIf="f.repeat.errors.mustMatch">Este campo deve ser igual a nova senha.</div>
+            </div>
         </div>
+        
         <button
             pButton
             type="button"

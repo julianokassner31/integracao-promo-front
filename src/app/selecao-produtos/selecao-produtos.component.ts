@@ -6,6 +6,7 @@ import { ApiService } from '../services/api.service';
 import { Calendar } from '../utils/Calendar';
 import { DataView } from 'primeng/dataview';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { MustMatch } from '../utils/must_match';
 
 @Component({
   selector: 'app-selecao-produtos',
@@ -296,6 +297,11 @@ export class SelecaoProdutosComponent implements OnInit {
       password: ['', Validators.required],
       newPassword: ['', Validators.required],
       repeat: ['', Validators.required]
+    },
+    {
+      validator: MustMatch('newPassword', 'repeat')
     })
   }
+
+  get f() { return this.formUsuario.controls; }
 }
