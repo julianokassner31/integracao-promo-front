@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild, ContentChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Produto } from '../model/produto';
 import { ApiService } from '../services/api.service';
 import { Calendar } from '../utils/Calendar';
-import { TabPanel } from 'primeng/tabview';
-import { Paginator } from 'primeng/paginator';
 import { DataView } from 'primeng/dataview';
-import { FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-selecao-produtos',
@@ -36,7 +34,13 @@ export class SelecaoProdutosComponent implements OnInit {
     sistema: ['']
   });
 
-  formUsuario: FormGroup = new FormGroup({});
+  formUsuario: FormGroup = this.fb.group({
+    idConfig: [''],
+    username: [''],
+    password: [''],
+    newPassword: [''],
+    repeat: ['']
+  })
 
   constructor(
     private api: ApiService,
@@ -76,12 +80,24 @@ export class SelecaoProdutosComponent implements OnInit {
         });
       },
       (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensagem',
-          detail: `Houve um erro ao atualizar o usuário!`,
-          life: 3000,
-        });
+
+        if(err.status == 404) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensagem',
+            detail: `Não foi possível encontrar o usuário!`,
+            life: 3000,
+          });
+        } else if (err.status == 400) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensagem',
+            detail: `Senha atual incorreta!`,
+            life: 3000,
+          });
+        }
+
+        
       },
       () => window.scrollTo({ top: 0, behavior: 'smooth' })
     );
@@ -273,12 +289,12 @@ export class SelecaoProdutosComponent implements OnInit {
       urlIntegracao: [resp.urlIntegracao, [Validators.required]],
       sistema: [resp.sistema, [Validators.required]]
     });
-debugger
+
     this.formUsuario = this.fb.group({
       idConfig: [resp.id],
       username: [resp.username, Validators.required],
       password: ['', Validators.required],
-      newpassword: ['', Validators.required],
+      newPassword: ['', Validators.required],
       repeat: ['', Validators.required]
     })
   }

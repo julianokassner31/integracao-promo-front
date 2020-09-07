@@ -238,7 +238,6 @@
   </p-tabPanel>
   <p-tabPanel header="Usuário">
     <p-card class="p-col-12">
-      {{formUsuario.value | json}}
       <div [formGroup]="formUsuario">
         <div class="p-grid p-col-6">
           <label class="p-col-2 p-sm-4">Usuário</label>
@@ -248,7 +247,7 @@
               type="text"
               size="30"
               pInputText
-              formControlname="username"
+              formControlName="username"
             />
         </div>
         <div class="p-grid p-col-6">
@@ -259,7 +258,7 @@
               type="password"
               size="30"
               pInputText
-              formControlname="password"
+              formControlName="password"
             />
         </div>
         <div class="p-grid p-col-6">
@@ -270,7 +269,7 @@
               type="password"
               size="30"
               pInputText
-              formControlname="newpassword"
+              formControlName="newPassword"
             />
         </div>
         <div class="p-grid p-col-6">
@@ -281,13 +280,13 @@
               type="password"
               size="30"
               pInputText
-              formControlname="repeat"
+              formControlName="repeat"
             />
         </div>
         <button
             pButton
             type="button"
-            [disabled]="!formConfig.valid"
+            [disabled]="!formUsuario.valid"
             class="p-col-2"
             label="Salvar"
             (click)="salvarConfigUsuario()">
