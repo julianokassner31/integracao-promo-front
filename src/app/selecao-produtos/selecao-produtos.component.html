@@ -1,4 +1,4 @@
-<p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event)">
+<p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event); limparInput($event)">
   <p-tabPanel header="Produtos Pareados">
     <p-card class="content p-nogutter">
       <div class="p-col-8 input">
@@ -100,6 +100,7 @@
     <p-card class="content">
       <div class="p-col-8 input">
         <p-autoComplete
+          #autoCompleteProdutosBuscar
           class="produtosBuscar"
           (completeMethod)="buscarProdutos($event)"
           [size]="60"
@@ -216,14 +217,20 @@
         </div>
         <div class="p-grid p-col-6">
           <label class="p-col-2 p-sm-4">Sistema Cliente</label>
-            <p-dropdown
+            <!-- <p-dropdown
               [options]="sistemaOptionsDropDow"
               placeholder="Selecione um sistema"
               class="p-col-4 p-sm-6"
               required="true"
               formControlName="sistema"
             >
-          </p-dropdown>
+          </p-dropdown> -->
+          <input
+            pInputText
+            class="p-col-4 p-sm-6"
+            required="true"
+            formControlName="sistema"
+          />
         </div>
         <button
           pButton

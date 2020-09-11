@@ -25,6 +25,7 @@ export class SelecaoProdutosComponent implements OnInit {
 
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   @ViewChild("produtosEnviadosTabPanel") produtosEnviadosTabPanel: DataView;
+  @ViewChild('autoCompleteProdutosBuscar') autoCompleteProdutosBuscar: AutoComplete;
 
   setores: {value: string, label: string}[] = [];
 
@@ -132,12 +133,7 @@ export class SelecaoProdutosComponent implements OnInit {
     this.messageService.clear();
     this.api.post(`/produtos/sincronizar/${idProduto}`).subscribe(
       (success) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensagem',
-          detail: 'Produto enviado para sincronização!',
-          life: 3000,
-        });
+        window.location.reload();
       },
       (err) => {
         this.messageService.add({
@@ -146,8 +142,6 @@ export class SelecaoProdutosComponent implements OnInit {
           detail: `Houve um erro ao tentar sincronizar o produto!`,
           life: 3000,
         });
-      },
-      () => {
         this.scrollTop();
       });
   }
@@ -304,4 +298,9 @@ export class SelecaoProdutosComponent implements OnInit {
   }
 
   get f() { return this.formUsuario.controls; }
+
+  limparInput(event) {
+      this.inputAutoComplete.inputEL.nativeElement.value = '';
+      this.autoCompleteProdutosBuscar.inputEL.nativeElement.value = '';
+  }
 }
