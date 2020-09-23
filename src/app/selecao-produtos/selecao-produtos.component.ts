@@ -251,6 +251,7 @@ export class SelecaoProdutosComponent implements OnInit {
     if (query) {
       this.produtosPromocaoFilter = this.produtosPromocao.filter(
         (produto) => produto.nome.toUpperCase().indexOf(query) > -1
+        || produto.idIdentificador.toString().indexOf(query) > -1
       );
       
       setTimeout(() => {
