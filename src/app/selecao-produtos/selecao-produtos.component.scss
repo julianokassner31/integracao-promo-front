@@ -16,10 +16,20 @@ button {
   margin-top: 15px;
 }
 
-.pi-sort-alt {
+.pi-sort-alt, .pi-trash {
   cursor: pointer;
 }
 
 p-inputnumber, p-dropdown {
   margin: -8px;
+}
+
+.prod-ativo {
+  color: #007ad9;
+  font-weight: 700;
+}
+
+.prod-inativo {
+  color: #f46464;
+  font-weight: 700;
 }

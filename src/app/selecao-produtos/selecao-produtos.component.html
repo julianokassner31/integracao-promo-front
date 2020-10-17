@@ -1,3 +1,5 @@
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
 <p-tabView (onChange)="buscarProdutosPromocaoOnChangeTab($event); limparInput($event)">
   <p-tabPanel header="Produtos Pareados">
     <p-card class="content p-nogutter">
@@ -65,9 +67,14 @@
                   </div>
                 </ng-template>
 
-                <div class="p-col-1 text-center">
-                  {{ produto.ativo ? "Sim" : "Não" }}
+                <div *ngIf="produto.ativo; else prodInativo" class="prod-ativo p-col-1 text-center">
+                  Sim
                 </div>
+                <ng-template #prodInativo>
+                  <div class="prod-inativo p-col-1 text-center">
+                    Não
+                  </div>
+                </ng-template>
 
                 <div class="p-col-1 text-center">
                   <i *ngIf="produto.log; else syncOk" 
@@ -87,6 +94,12 @@
                     class="pi pi-sort-alt" 
                     pTooltip="Sincronizar produto"
                     (click)=syncProduto(produto.id)>
+                  </i>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <i 
+                    class="pi pi-trash" 
+                    pTooltip="Apagar"
+                    (click)=delete(produto.id)>
                   </i>
                 </div>
               </div>
@@ -153,9 +166,16 @@
                     Indeterminado.
                   </div>
                 </ng-template>
-                <div class="p-col-1 text-center">
-                  {{ produto.ativo ? "Sim" : "Não" }}
+
+                <div *ngIf="produto.ativo; else prodInativo" class="prod-ativo p-col-1 text-center">
+                  Sim
                 </div>
+                <ng-template #prodInativo>
+                  <div class="prod-inativo p-col-1 text-center">
+                    Não
+                  </div>
+                </ng-template>
+
                 <p-dropdown 
                   placeholder="Selecione um Setor" 
                   class="p-col-1 text-center" 

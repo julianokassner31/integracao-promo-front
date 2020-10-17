@@ -10,7 +10,7 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -36,9 +36,10 @@ import {DropdownModule} from 'primeng/dropdown';
 import {TooltipModule} from 'primeng/tooltip';
 import {ReactiveFormsModule} from '@angular/forms';
 import {InputNumberModule} from 'primeng/inputnumber';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+
 
 registerLocaleData(localePt);
-import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -73,10 +74,13 @@ import { from } from 'rxjs';
     DropdownModule,
    TooltipModule,
    ReactiveFormsModule,
-   InputNumberModule
+   InputNumberModule,
+   ConfirmDialogModule,
+  
   ],
   providers: [
     MessageService,
+    ConfirmationService,
     Location,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },

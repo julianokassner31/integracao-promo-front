@@ -7,6 +7,7 @@ import { Calendar } from '../utils/Calendar';
 import { DataView } from 'primeng/dataview';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MustMatch } from '../utils/must_match';
+import {ConfirmationService} from 'primeng/api';
 
 @Component({
   selector: 'app-selecao-produtos',
@@ -47,7 +48,8 @@ export class SelecaoProdutosComponent implements OnInit {
   constructor(
     private api: ApiService,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -303,5 +305,22 @@ export class SelecaoProdutosComponent implements OnInit {
   limparInput(event) {
       this.inputAutoComplete.inputEL.nativeElement.value = '';
       this.autoCompleteProdutosBuscar.inputEL.nativeElement.value = '';
+  }
+
+  delete(idProduto) {
+    console.log("idproduto: " + idProduto)
+    const produto = this.produtosPromocao.find(p => p.id === idProduto);
+    console.log("idproduto: " + produto.toString())
+    this.confirmationService.confirm({
+      header: 'Confirmação',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Cancelar',
+      message: `Tem certeza que deseja deletar o produto ${produto.nome}?`,
+      accept: () => {
+        this.api.delete("/produtos/"+idProduto).subscribe(resp => {
+          window.location.reload();
+        })
+      }
+    });
   }
 }

@@ -18,6 +18,10 @@ export class ApiService {
     return this.http.post(this.url.concat(uri), body);
   }
 
+  public delete(uri: string): Observable<any> {
+    return this.http.delete(this.url.concat(uri));
+  }
+
   public getVersion() {
     return this.http.get(this.url.concat('/produtos/version'));
   }

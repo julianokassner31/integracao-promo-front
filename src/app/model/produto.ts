@@ -14,4 +14,5 @@ export interface Produto {
   sync: boolean;
   setor: string;
   selecionado: boolean;
+  id: number;
 }
