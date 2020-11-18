@@ -19,7 +19,7 @@
       </div>
       <div class="p-col-12">
         <p-dataView #produtosEnviadosTabPanel
-          paginatorPosition="both" 
+          paginatorPosition="both"
           [totalRecords]="totalRecords"
           [pageLinks]="totalPages"
           [paginator]="true"
@@ -60,7 +60,7 @@
                   de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
                   hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
                 </div>
-                
+
                 <ng-template #semInfo>
                   <div class="p-col-2 text-center">
                     Indeterminado.
@@ -77,7 +77,7 @@
                 </ng-template>
 
                 <div class="p-col-1 text-center">
-                  <i *ngIf="produto.log; else syncOk" 
+                  <i *ngIf="produto.log; else syncOk"
                     class="pi pi-exclamation-circle"
                     pTooltip="{{produto.log}}">
                   </i>
@@ -88,16 +88,16 @@
                     </i>
                   </ng-template>
                 </div>
-                
+
                 <div class="p-col-1 text-center">
-                  <i 
-                    class="pi pi-sort-alt" 
+                  <i
+                    class="pi pi-sort-alt"
                     pTooltip="Sincronizar produto"
                     (click)=syncProduto(produto.id)>
                   </i>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <i 
-                    class="pi pi-trash" 
+                  <i
+                    class="pi pi-trash"
                     pTooltip="Apagar"
                     (click)=delete(produto.id)>
                   </i>
@@ -116,6 +116,7 @@
           #autoCompleteProdutosBuscar
           class="produtosBuscar"
           (completeMethod)="buscarProdutos($event)"
+          [(ngModel)]="produtoBusca"
           [size]="60"
           delay="400"
           minLength="3"
@@ -125,7 +126,13 @@
         </p-autoComplete>
       </div>
       <div class="p-col-12">
-        <p-dataView [paginator]="true" [rows]="10" [value]="produtos">
+        <p-dataView
+          (onLazyLoad)="buscarProdutoPage($event)"
+          [lazy]="true"
+          [paginator]="true"
+          [rows]="20"
+          [totalRecords]="count"
+          [value]="produtos">
           <p-header class="p-grid p-justify-center">
             <div class="p-col-1 text-center">Codigo</div>
             <div class="p-col-2 text-center">Nome</div>
@@ -160,7 +167,7 @@
                   de {{ produto.dtInicio | date: "dd/MM/yyyy" }}<br />
                   hà {{ produto.dtFim | date: "dd/MM/yyyy" }}
                 </div>
-                
+
                 <ng-template #semInfo>
                   <div class="p-col-2 text-center">
                     Indeterminado.
@@ -176,10 +183,10 @@
                   </div>
                 </ng-template>
 
-                <p-dropdown 
-                  placeholder="Selecione um Setor" 
-                  class="p-col-1 text-center" 
-                  [options]="setores" 
+                <p-dropdown
+                  placeholder="Selecione um Setor"
+                  class="p-col-1 text-center"
+                  [options]="setores"
                   [(ngModel)]="produto.setor">
                 </p-dropdown>
                 <div class="p-col-1 text-center">
@@ -313,7 +320,7 @@
               <div style="text-align: center; color: red;" *ngIf="f.repeat.errors.mustMatch">Este campo deve ser igual a nova senha.</div>
             </div>
         </div>
-        
+
         <button
             pButton
             type="button"

@@ -23,6 +23,8 @@ export class SelecaoProdutosComponent implements OnInit {
   rowsPerPage = 10;
   pt = Calendar.PT_BR;
   sistemaOptionsDropDow = [];
+  produtoBusca = "";
+  count = 0;
 
   @ViewChild('inputAutoComplete') inputAutoComplete: AutoComplete;
   @ViewChild("produtosEnviadosTabPanel") produtosEnviadosTabPanel: DataView;
@@ -43,7 +45,7 @@ export class SelecaoProdutosComponent implements OnInit {
     password: [''],
     newPassword: [''],
     repeat: ['']
-  })
+  });
 
   constructor(
     private api: ApiService,
@@ -101,7 +103,7 @@ export class SelecaoProdutosComponent implements OnInit {
           });
         }
 
-        
+
       },
       () => window.scrollTo({ top: 0, behavior: 'smooth' })
     );
@@ -162,9 +164,9 @@ export class SelecaoProdutosComponent implements OnInit {
         detail: 'Existe produto sem setor selecionado.',
         life: 3000,
       });
-      
+
       this.scrollTop();
-      
+
       return;
     }
 
@@ -209,21 +211,32 @@ export class SelecaoProdutosComponent implements OnInit {
   }
 
   buscarProdutos(e) {
-    
+
     let loader = <HTMLElement> document.querySelector('.produtosBuscar i');
-    
+
     if (loader) loader.style.display = 'block';
-    
-    this.api.get(`/produtos?query=${e.query}`).subscribe((resp) => {
-      
-      this.produtos = resp;
-      
+    this.produtoBusca = e.query;
+    this.api.get(`/produtos?query=${e.query}&offset=0`).subscribe((resp) => {
+
+      this.produtos = resp.produtos;
+      this.count = resp.count;
+
       if (!loader) {
         loader = <HTMLElement> document.querySelector('.produtosBuscar i');
-      } 
-      
+      }
+
       loader.style.display = 'none';
-    
+
+    });
+  }
+
+  buscarProdutoPage(e) {
+
+    this.api.get(`/produtos?query=${this.produtoBusca}&offset=${e.first}`).subscribe((resp) => {
+
+      this.produtos = resp.produtos;
+      this.count = resp.count;
+
     });
   }
 
@@ -247,7 +260,7 @@ export class SelecaoProdutosComponent implements OnInit {
     const query = (<String>e.query).toUpperCase();
 
     let loader = <HTMLElement> document.querySelector('.produtosPareados i');
- 
+
     if (loader) loader.style.display = 'block';
 
     if (query) {
@@ -255,11 +268,11 @@ export class SelecaoProdutosComponent implements OnInit {
         (produto) => produto.nome.toUpperCase().indexOf(query) > -1
         || produto.idIdentificador.toString().indexOf(query) > -1
       );
-      
+
       setTimeout(() => {
         if (!loader) {
           loader = <HTMLElement> document.querySelector('.produtosPareados i');
-         
+
         }
         loader.style.display = 'none';
       }, 500);
